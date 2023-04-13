@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  db:
+    image: redis: 6.2.6
+    container_name: chat-db
+  web:
+    image: fastapi_redis_chat
+    container_name: chat-web
+    command: uvicorn app.main:app --host 0.0.0.0 --port 80
+    volumes:
+      - .:/code
+    ports:
+      - "80:80"
+    depends_on:
+      - db
