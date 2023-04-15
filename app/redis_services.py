@@ -16,12 +16,15 @@ connection = redis.Redis(
 
 async def redis_connector(websocket: WebSocket):
     """
-    Функция для подключения к Redis в режиме Pub/Sub(издатель-подписчик).
+    Функция для подключения к Redis в режиме Pub/Sub
+    (издатель-подписчик).
     Схема взаимодействия:
 
-    1) Веб-браузер подключается к серверу по веб-сокету;
-    2) Когда происходит событие, back-end отправляет данные в клиент по веб-сокету
-    3) Клиент получает данные и отображает событие в режиме реального времени
+    1) Клиент подключается к серверу по веб-сокету;
+    2) Когда происходит событие, back-end отправляет
+    данные в клиент по веб-сокету;
+    3) Клиент получает данные и отображает событие 
+    в режиме реального времени;
     """
 
     async def consumer_handler(connection: redis, ws: WebSocket):
@@ -50,7 +53,7 @@ async def redis_connector(websocket: WebSocket):
             logger.error(exc)
 
     async with connection.pubsub() as pubsub:
-        """ Подключаемся к активным каналам Redis. """
+        """ Подключение к активным каналам Redis. """
         await pubsub.psubscribe("channel:*")
 
         consumer_task = asyncio.create_task(consumer_handler(
@@ -71,8 +74,7 @@ async def redis_connector(websocket: WebSocket):
             return_when=asyncio.FIRST_COMPLETED,
         )
 
-        logger.info("\tDone task: {done}!")
+        logger.info(f"\tDone task: {done}!")
         for task in pending:
             logger.debug(f"\tCanceled task: {task}.")
             task.cancel()
-
